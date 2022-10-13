@@ -10,6 +10,7 @@ import com.nvlad.tinypng.ui.dialogs.FileTreeNode;
 import com.nvlad.tinypng.ui.dialogs.ProcessImageDialog;
 import com.nvlad.tinypng.util.StringFormatUtil;
 import com.tinify.Exception;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,11 @@ public class ProcessActionListener extends ActionListenerBase {
         if (!TinyPNG.setupApiKey(dialog.getProject())) {
             return;
         }
+        boolean isSkipCompress = dialog.getRbSkipCompress().isSelected();
+        int skipCount = 0;
+        String temp = dialog.getTfSkipCount().getText();
+        if (StringUtils.isNumeric(temp))
+            skipCount = Integer.parseInt(temp);
 
         dialog.setTitle("[0%]");
         dialog.setCompressInProgress(true);
@@ -37,11 +43,14 @@ public class ProcessActionListener extends ActionListenerBase {
             ((DefaultTreeModel) dialog.getTree().getModel()).nodeChanged(node);
         }
 
+        int finalSkipCount = skipCount;
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             @Override
             public void run() {
                 int index = 0;
                 for (FileTreeNode node : nodes) {
+                    if (isSkipCompress && node.getZipCount() >= finalSkipCount)
+                        continue;
                     try {
                         node.setImageBuffer(TinyPNG.process(node.getVirtualFile()));
                     } catch (Exception tinifyException) {
@@ -91,6 +100,7 @@ public class ProcessActionListener extends ActionListenerBase {
                         dialog.setCompressInProgress(false);
                         dialog.getRootPane().setDefaultButton(dialog.getButtonSave());
                         dialog.getButtonSave().setEnabled(true);
+                        dialog.getButtonProcess().setEnabled(true);
                         dialog.getButtonCancel().setText("Cancel");
 
                         long totalBytes = 0;

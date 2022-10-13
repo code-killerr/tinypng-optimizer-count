@@ -1,6 +1,7 @@
 buildscript {
     repositories {
-        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
+        mavenCentral()
+        google()
         maven { url "https://plugins.gradle.org/m2/" }
     }
 
@@ -46,7 +47,7 @@ intellij {
 }
 
 group 'com.nvlad'
-version '1.0.9'
+version '1.1.1'
 
 patchPluginXml {
     changeNotes """

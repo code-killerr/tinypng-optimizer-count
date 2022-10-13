@@ -3,6 +3,7 @@ package com.nvlad.tinypng.ui.dialogs.listeners;
 import com.intellij.openapi.application.ApplicationManager;
 import com.nvlad.tinypng.ui.dialogs.FileTreeNode;
 import com.nvlad.tinypng.ui.dialogs.ProcessImageDialog;
+import com.nvlad.tinypng.util.ZipSignUtil;
 
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.ActionEvent;
@@ -26,9 +27,11 @@ public class SaveActionListener extends ActionListenerBase {
             public void run() {
                 for (FileTreeNode node : nodes) {
                     try {
+                        if (node.getImageBuffer() == null) continue;
                         OutputStream stream = node.getVirtualFile().getOutputStream(this);
-                        stream.write(node.getImageBuffer());
+                        stream.write(ZipSignUtil.addZipSign(node.getVirtualFile().contentsToByteArray(), node.getImageBuffer()));
                         stream.close();
+                        node.initZipCount();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

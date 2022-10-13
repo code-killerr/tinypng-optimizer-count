@@ -27,6 +27,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ProcessImageDialog extends JDialog {
     private JPanel contentPane;
@@ -44,6 +45,9 @@ public class ProcessImageDialog extends JDialog {
     private JLabel titleBefore;
     private JLabel titleAfter;
     private JPanel toolbar;
+    private JRadioButton rbSkipCompress;
+    private JTextField tfSkipCount;
+    private JLabel lSkipCompressText;
     private List<VirtualFile> myFiles;
     private List<VirtualFile> myRoots;
     private Project myProject;
@@ -64,6 +68,28 @@ public class ProcessImageDialog extends JDialog {
 
         final CancelActionListener cancelActionListener = new CancelActionListener(this);
         buttonCancel.addActionListener(cancelActionListener);
+
+        // 限制只能输入数字
+        tfSkipCount.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {}
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                Object o = e.getSource();
+                if (o instanceof JTextField) {
+                    char keyCh = e.getKeyChar();
+                    Pattern pat = Pattern.compile("[0-9|\b]");
+                    if (!pat.matcher(String.valueOf(keyCh)).matches()){
+                        e.setKeyChar('\0');
+                        tfSkipCount.setText("");
+                    }
+                }
+            }
+        });
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -188,6 +214,14 @@ public class ProcessImageDialog extends JDialog {
 
     public JButton getButtonCancel() {
         return buttonCancel;
+    }
+
+    public JRadioButton getRbSkipCompress(){
+        return rbSkipCompress;
+    }
+
+    public JTextField getTfSkipCount(){
+        return tfSkipCount;
     }
 
     public JButton getButtonProcess() {

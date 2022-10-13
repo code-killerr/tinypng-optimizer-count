@@ -1,9 +1,10 @@
 <idea-plugin>
-    <id>com.nvlad.tinypng-optimizer</id>
+    <id>com.fn.tinypng-optimizer</id>
     <name>TinyPNG Image Optimizer</name>
-    <vendor email="tinypng@nvlad.com" url="http://nvlad.com">NVlad</vendor>
+    <vendor email="tinypng@fn.com" url="http://nvlad.com">CodeKiller</vendor>
 
     <description><![CDATA[
+    (modify by tinypng-optimizer)
     Smart PNG and JPEG compression using <a href="https://tinypng.com/">TinyPNG</a> service.
     ]]></description>
 

@@ -7,8 +7,10 @@ import com.intellij.ui.CheckboxTree;
 import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.util.IconUtil;
+import com.nvlad.tinypng.util.ZipSignUtil;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class FileCellRenderer extends CheckboxTree.CheckboxTreeCellRenderer {
     private final Project myProject;
@@ -28,9 +30,11 @@ public class FileCellRenderer extends CheckboxTree.CheckboxTreeCellRenderer {
         renderer.setIcon(IconUtil.getIcon(file, Iconable.ICON_FLAG_VISIBILITY, myProject));
         renderer.append(file.getName());
 
+        if (!file.isDirectory())
+            renderer.append("  zip:" + node.getZipCount());
+
         if (node.hasError()) {
             renderer.append("  " + node.getError().message, SimpleTextAttributes.ERROR_ATTRIBUTES);
-
             return;
         }
 
