@@ -16,7 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BaseCompressAction extends AnAction {
-    private static final String[] supportedExtensions = {"png", "jpg", "jpeg"};
+    private static final String[] supportedExtensions = {"png", "jpg", "jpeg", "webp"};
+    private static final String[] unsupportedExtensions = {".9.png"};
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -68,7 +69,7 @@ public abstract class BaseCompressAction extends AnAction {
             }
 
             final String extension = file.getExtension();
-            if (extension != null && ArrayUtil.contains(extension.toLowerCase(), supportedExtensions)) {
+            if (extension != null && isEndContains(file.getName().toLowerCase(), unsupportedExtensions) && ArrayUtil.contains(extension.toLowerCase(), supportedExtensions)) {
                 result.add(file);
                 if (breakOnFirstFound) {
                     break;
@@ -77,5 +78,13 @@ public abstract class BaseCompressAction extends AnAction {
         }
 
         return result;
+    }
+
+    protected boolean isEndContains(String fileName, String[] extensionList){
+        for (String str : extensionList){
+            if (fileName.endsWith(str))
+                return false;
+        }
+        return true;
     }
 }

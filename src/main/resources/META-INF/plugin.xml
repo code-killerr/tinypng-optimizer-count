@@ -1,11 +1,11 @@
 <idea-plugin>
     <id>com.fn.tinypng-optimizer</id>
     <name>TinyPNG Image Optimizer</name>
-    <vendor email="tinypng@fn.com" url="http://nvlad.com">CodeKiller</vendor>
+    <vendor email="tinypng@fn.com" url="https://code-killerr.github.io/">xuegang.tu</vendor>
 
     <description><![CDATA[
     (modify by tinypng-optimizer)
-    Smart PNG and JPEG compression using <a href="https://tinypng.com/">TinyPNG</a> service.
+    使用 <a href="https://tinypng.com/">TinyPNG</a> 服务来进行png,jpg或者webp文件的压缩.
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -18,24 +18,24 @@
         <errorHandler implementation="com.nvlad.tinypng.diagnostic.ErrorReportHandler"/>
         <applicationConfigurable
                 instance="com.nvlad.tinypng.ui.settings.Settings"
-                displayName="TinyPNG Image Optimize"
+                displayName="TinyPNG压缩插件基础设置"
                 id="NVlad.TinyPNG"
                 groupId="tools"
         />
     </extensions>
 
     <actions>
-        <group id="TinyPNGImageOptimizer" text="TinyPNG Image Optimizer" popup="true" icon="/icons/action.png" class="com.nvlad.tinypng.actions.CompressActionGroup">
+        <group id="TinyPNGImageOptimizer" text="TinyPNG图片压缩工具" popup="true" icon="/icons/action.png" class="com.nvlad.tinypng.actions.CompressActionGroup">
             <action id="TinyPNGImageOptimizerDialog"
                     class="com.nvlad.tinypng.actions.CompressDialogAction"
                     icon="/icons/action.png"
-                    text="Optimize Images..."
-                    description="Optimize Image size with TinyPNG"/>
+                    text="Optimize Images(图片压缩)..."
+                    description="使用TinyPng进行图片压缩"/>
             <action id="TinyPNGImageOptimizerBackground"
                     class="com.nvlad.tinypng.actions.CompressBackgroundAction"
                     icon="/icons/action.png"
-                    text="Optimize in Background"
-                    description="Optimize Image size with TinyPNG in Background"/>
+                    text="Optimize in Background(图片后台压缩)"
+                    description="使用TinyPng在后台进行图片压缩"/>
 
             <add-to-group group-id="ToolsMenu" anchor="last"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>

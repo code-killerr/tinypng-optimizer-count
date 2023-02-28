@@ -7,19 +7,21 @@ import com.nvlad.tinypng.util.ZipSignUtil;
 
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-public class SaveActionListener extends BaseFileOperatorActionListener {
-    public SaveActionListener(ProcessImageDialog dialog) {
+public class DeleteTagActionListener extends BaseFileOperatorActionListener {
+
+    public DeleteTagActionListener(ProcessImageDialog dialog) {
         super(dialog);
     }
 
     @Override
     protected byte[] operatorData(FileTreeNode node) throws IOException {
-        if (node.getImageBuffer() == null) return null;
-        return ZipSignUtil.addZipSign(node.getVirtualFile().contentsToByteArray(), node.getImageBuffer());
+        return ZipSignUtil.deleteSign(node.getVirtualFile().contentsToByteArray());
     }
+
 
 }

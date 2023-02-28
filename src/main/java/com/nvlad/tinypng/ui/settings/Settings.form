@@ -40,7 +40,7 @@
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Usage this month: ---"/>
+              <text value="本月已使用: ---"/>
             </properties>
           </component>
         </children>
@@ -64,7 +64,7 @@
             </constraints>
             <properties>
               <selected value="true"/>
-              <text value="Check supported files"/>
+              <text value="压缩时是否限制压缩文件类型(目前支持png, jpg, jpeg, webp,忽略.9.png)"/>
             </properties>
           </component>
         </children>

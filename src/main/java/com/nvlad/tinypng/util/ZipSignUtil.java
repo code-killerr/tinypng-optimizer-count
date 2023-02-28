@@ -16,6 +16,32 @@ public class ZipSignUtil {
         return fileByteArray[fileByteArray.length-1];
     }
 
+    // 给原始文件添加标记
+    public static byte[] addSourceSign(byte[] sourceByte){
+        return addSourceSign(sourceByte, false);
+    }
+
+    public static byte[] addSourceSign(byte[] sourceByte, boolean skip){
+        if (sourceByte == null) return null;
+        if (isHaveSign(sourceByte)){
+            if (!skip && getZipCount(sourceByte) < 65535)
+                sourceByte[sourceByte.length - 1]++;
+            return sourceByte;
+        } else {
+            return addZipSign(sourceByte, sourceByte);
+        }
+    }
+
+    // 给原始文件删除标记
+    public static byte[] deleteSign(byte[] sourceByte){
+        if (sourceByte == null) return null;
+        if (!isHaveSign(sourceByte)) return sourceByte;
+        byte[] newByteArray = new byte[sourceByte.length - 5];
+        System.arraycopy(sourceByte, 0, newByteArray, 0, sourceByte.length - 5);
+        return newByteArray;
+    }
+
+    // 给压缩数据添加标记
     public static byte[] addZipSign(byte[] sourceByte, byte[] compressByte){
         if (sourceByte == null || compressByte == null) return compressByte == null ? sourceByte : compressByte;
         byte[] newByteArray;
@@ -24,7 +50,9 @@ public class ZipSignUtil {
         System.arraycopy(compressByte, 0, newByteArray, 0, compressByte.length);
         if (isHaveSign(sourceByte)){
             System.arraycopy(sourceByte, sourceByte.length - 5, newByteArray, newByteArray.length - 5, 5);
-            newByteArray[newByteArray.length - 1]++;
+            // 超过两字节容量的数据不进行累加
+            if (getZipCount(newByteArray) < 65535)
+                newByteArray[newByteArray.length - 1]++;
         }else{
             newByteArray[length] = 0x54;
             newByteArray[length + 1] = 0x5A;

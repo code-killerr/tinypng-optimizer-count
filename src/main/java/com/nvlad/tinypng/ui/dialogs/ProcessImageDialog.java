@@ -9,10 +9,7 @@ import com.intellij.util.ui.tree.TreeUtil;
 import com.nvlad.tinypng.Constants;
 import com.nvlad.tinypng.PluginGlobalSettings;
 import com.nvlad.tinypng.ui.components.JImage;
-import com.nvlad.tinypng.ui.dialogs.listeners.CancelActionListener;
-import com.nvlad.tinypng.ui.dialogs.listeners.ImageSelectListener;
-import com.nvlad.tinypng.ui.dialogs.listeners.ProcessActionListener;
-import com.nvlad.tinypng.ui.dialogs.listeners.SaveActionListener;
+import com.nvlad.tinypng.ui.dialogs.listeners.*;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -45,9 +42,12 @@ public class ProcessImageDialog extends JDialog {
     private JLabel titleBefore;
     private JLabel titleAfter;
     private JPanel toolbar;
-    private JRadioButton rbSkipCompress;
+    private JCheckBox rbSkipCompress;
     private JTextField tfSkipCount;
     private JLabel lSkipCompressText;
+    private JButton buttonDeleteTag;
+    private JButton buttonAddTag;
+    private JCheckBox radioSkipSignFile;
     private List<VirtualFile> myFiles;
     private List<VirtualFile> myRoots;
     private Project myProject;
@@ -65,6 +65,8 @@ public class ProcessImageDialog extends JDialog {
 
         buttonProcess.addActionListener(new ProcessActionListener(this));
         buttonSave.addActionListener(new SaveActionListener(this));
+        buttonAddTag.addActionListener(new AddTagActionListener(this));
+        buttonDeleteTag.addActionListener(new DeleteTagActionListener(this));
 
         final CancelActionListener cancelActionListener = new CancelActionListener(this);
         buttonCancel.addActionListener(cancelActionListener);
@@ -129,12 +131,7 @@ public class ProcessImageDialog extends JDialog {
                 settings.setDialogLocation(((ProcessImageDialog) e.getSource()).getLocation());
             }
         });
-        splitPanel.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                settings.dividerLocation = (int) evt.getNewValue();
-            }
-        });
+        splitPanel.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, evt -> settings.dividerLocation = (int) evt.getNewValue());
         this.pack();
     }
 
@@ -216,8 +213,19 @@ public class ProcessImageDialog extends JDialog {
         return buttonCancel;
     }
 
-    public JRadioButton getRbSkipCompress(){
+    public JButton getButtonDeleteTag() {
+        return buttonDeleteTag;
+    }
+
+    public JButton getButtonAddTag() {
+        return buttonAddTag;
+    }
+
+    public JCheckBox getRbSkipCompress(){
         return rbSkipCompress;
+    }
+    public JCheckBox getRadioSkipSignFile(){
+        return radioSkipSignFile;
     }
 
     public JTextField getTfSkipCount(){

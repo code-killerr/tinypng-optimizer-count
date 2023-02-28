@@ -9,6 +9,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.nvlad.tinypng.services.TinyPNG;
+import com.nvlad.tinypng.util.ZipSignUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -35,10 +36,11 @@ public class CompressBackgroundAction extends BaseCompressAction {
                     index += 1;
                     try {
                         final byte[] result = TinyPNG.process(file);
-                        WriteCommandAction.runWriteCommandAction(project, new SaveImage(file, result));
+                        final byte[] signResult = ZipSignUtil.addZipSign(file.contentsToByteArray(), result);
+                        WriteCommandAction.runWriteCommandAction(project, new SaveImage(file, signResult));
                         indicator.setFraction(index / list.size());
                     } catch (IOException ex) {
-                        System.out.println(ex.toString());
+                        ex.printStackTrace();
                     }
                 }
             }
@@ -61,7 +63,7 @@ public class CompressBackgroundAction extends BaseCompressAction {
                 stream.write(myBuffer);
                 stream.close();
             } catch (IOException e) {
-                System.out.println(e.toString());
+                e.printStackTrace();
             }
         }
     }
