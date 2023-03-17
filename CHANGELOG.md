@@ -9,6 +9,10 @@ Waiting for Release
 - Add: Transparency chessboard under image
 - Add: Show optimizing errors
 
+## 1.1.5更新内容
+- 防止压缩后还有未保存文件，允许多次保存
+- 压缩后清除缓存数据，调整压缩率显示
+
 ## 1.1.4更新内容
 - 增加图片打标略过已打标文件功能，如果不略过将会给标记压缩数量+1
 - 增加.9.png图片过滤

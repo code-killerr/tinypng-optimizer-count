@@ -36,6 +36,9 @@ public abstract class BaseFileOperatorActionListener extends ActionListenerBase 
                         OutputStream stream = node.getVirtualFile().getOutputStream(this);
                         stream.write(operatorData);
                         stream.close();
+                        // 存储后清空缓存
+                        node.setImageBuffer(null);
+                        // 初始化让下一次读取重新计算压缩数量
                         node.initZipCount();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -46,10 +49,15 @@ public abstract class BaseFileOperatorActionListener extends ActionListenerBase 
                     for (FileTreeNode node : nodes) {
                         ((DefaultTreeModel) dialog.getTree().getModel()).nodeChanged(node);
                     }
+
+                    dialog.getRootPane().setDefaultButton(dialog.getButtonProcess());
+                    // 如果还有未保存的文件，save按钮不置灰
+                    dialog.getButtonSave().setEnabled(true);
                     dialog.getButtonCancel().setEnabled(true);
                     dialog.getButtonProcess().setEnabled(true);
                     dialog.getButtonAddTag().setEnabled(true);
                     dialog.getButtonDeleteTag().setEnabled(true);
+
                 });
             }
         });

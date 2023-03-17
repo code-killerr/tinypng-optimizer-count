@@ -38,10 +38,6 @@ public class ProcessActionListener extends ActionListenerBase {
         dialog.getButtonProcess().setEnabled(false);
         dialog.getButtonCancel().setText("Stop");
         final List<FileTreeNode> nodes = getCheckedNodes((FileTreeNode) dialog.getTree().getModel().getRoot());
-        for (FileTreeNode node : nodes) {
-            node.setImageBuffer(null);
-            ((DefaultTreeModel) dialog.getTree().getModel()).nodeChanged(node);
-        }
 
         int finalSkipCount = skipCount;
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
@@ -53,7 +49,8 @@ public class ProcessActionListener extends ActionListenerBase {
                     node.setImageBuffer(TinyPNG.process(node.getVirtualFile()));
                 } catch (Exception tinifyException) {
                     TinyPNGErrorInfo error = TinyPNGErrorInfo.parse(tinifyException.getMessage());
-                    if (error != null && error.code == 415) {
+                    // 多压缩的情况下，如果是 415表示文件类型不正确；401表示证书不正确；400表示输入文件为空；5xx表示服务器异常；2xx表示成功, 批量压缩时文件类型不正确和文件为空的异常跳过其它错误终止
+                    if (error != null && (error.code == 415 || error.code == 400)) {
                         node.setError(error);
                     } else {
                         ApplicationManager.getApplication().invokeLater(() -> {
