@@ -14,13 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,10 +49,12 @@ public class ProcessImageDialog extends JDialog {
     private JButton buttonDeleteTag;
     private JButton buttonAddTag;
     private JCheckBox radioSkipSignFile;
+    private JTextField filterEdit;
     private List<VirtualFile> myFiles;
     private List<VirtualFile> myRoots;
     private Project myProject;
     private boolean imageCompressInProgress;
+    private String filterText;
 
     public ProcessImageDialog(Project project, List<VirtualFile> files, List<VirtualFile> roots) {
         imageCompressInProgress = false;
@@ -166,6 +169,24 @@ public class ProcessImageDialog extends JDialog {
 
         titleBefore.setForeground(JBColor.green.darker());
         titleAfter.setForeground(JBColor.red.darker());
+
+        filterEdit.setEditable(true);
+        filterEdit.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                onFilterChanged(filterEdit.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onFilterChanged(filterEdit.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onFilterChanged(filterEdit.getText());
+            }
+        });
     }
 
     @Override
@@ -267,9 +288,16 @@ public class ProcessImageDialog extends JDialog {
         toolbar = Toolbar.create();
     }
 
+    private void onFilterChanged(String text) {
+        filterText = text;
+        fileTree.setModel(new DefaultTreeModel(buildTree()));
+    }
+
     private FileTreeNode buildTree() {
         FileTreeNode root = new FileTreeNode();
         for (VirtualFile file : myFiles) {
+            if (filterText != null && !filterText.isEmpty()
+                    && !file.getName().contains(filterText)) continue;
             getParent(root, file).add(new FileTreeNode(file));
         }
 
