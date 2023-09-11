@@ -21,6 +21,7 @@ public class ImageSelectListener implements TreeSelectionListener {
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         FileTreeNode node = (FileTreeNode) myDialog.getTree().getLastSelectedPathComponent();
+        if (node == null) return;
         try {
             updateImage(myDialog.getImageBefore(), myDialog.getDetailsBefore(), node.getVirtualFile());
             updateImage(myDialog.getImageAfter(), myDialog.getDetailsAfter(), node.getImageBuffer());
