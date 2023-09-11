@@ -54,33 +54,13 @@ public class ProcessImageDialog extends JDialog {
     private JCheckBox radioSkipSignFile;
     private JTextField filterEdit;
     private JCheckBox cbNoZip;
-//    private JTextField tfFilterCompressNum;
+    private JTextField tfFilterCompressNum;
     private JLabel lCompressText;
     private List<VirtualFile> myFiles;
     private List<VirtualFile> myRoots;
     private Project myProject;
     private boolean imageCompressInProgress;
     private String filterText;
-    private KeyListener numberInputFilter = new KeyListener() {
-        @Override
-        public void keyTyped(KeyEvent e) {}
-
-        @Override
-        public void keyPressed(KeyEvent e) {}
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            Object o = e.getSource();
-            if (o instanceof JTextField) {
-                char keyCh = e.getKeyChar();
-                Pattern pat = Pattern.compile("[0-9|\b]");
-                if (!pat.matcher(String.valueOf(keyCh)).matches()){
-                    e.setKeyChar('\0');
-                    tfSkipCount.setText("");
-                }
-            }
-        }
-    };
 
     public ProcessImageDialog(Project project, List<VirtualFile> files, List<VirtualFile> roots) {
         imageCompressInProgress = false;
@@ -101,8 +81,47 @@ public class ProcessImageDialog extends JDialog {
         buttonCancel.addActionListener(cancelActionListener);
 
         // 限制只能输入数字
-        tfSkipCount.addKeyListener(numberInputFilter);
-//        tfFilterCompressNum.addKeyListener(numberInputFilter);
+        tfSkipCount.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {}
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                Object o = e.getSource();
+                if (o instanceof JTextField) {
+                    char keyCh = e.getKeyChar();
+                    Pattern pat = Pattern.compile("[0-9|\b]");
+                    if (!pat.matcher(String.valueOf(keyCh)).matches()){
+                        e.setKeyChar('\0');
+                        tfSkipCount.setText("");
+                    }
+                }
+            }
+        });
+
+//        tfFilterCompressNum.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {}
+//
+//            @Override
+//            public void keyPressed(KeyEvent e) {}
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                Object o = e.getSource();
+//                if (o instanceof JTextField) {
+//                    char keyCh = e.getKeyChar();
+//                    Pattern pat = Pattern.compile("[0-9|\b]");
+//                    if (!pat.matcher(String.valueOf(keyCh)).matches()){
+//                        e.setKeyChar('\0');
+//                        tfFilterCompressNum.setText("");
+//                    }
+//                }
+//            }
+//        });
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -196,8 +215,9 @@ public class ProcessImageDialog extends JDialog {
             }
         });
 
-        // 如果选项变化重新过滤
+//         如果选项变化重新过滤
         cbNoZip.addItemListener(e -> {
+            if (fileTree == null) return;
             fileTree.setModel(new DefaultTreeModel(buildTree()));
             TreeUtil.expandAll(fileTree);
         });
@@ -259,7 +279,6 @@ public class ProcessImageDialog extends JDialog {
     public JCheckBox getRbSkipCompress(){
         return rbSkipCompress;
     }
-
     public JCheckBox getRadioSkipSignFile(){
         return radioSkipSignFile;
     }
@@ -305,24 +324,25 @@ public class ProcessImageDialog extends JDialog {
 
     private void onFilterChanged(String text) {
         filterText = text;
+        if (fileTree == null) return;
         fileTree.setModel(new DefaultTreeModel(buildTree()));
         TreeUtil.expandAll(fileTree);
     }
 
     private FileTreeNode buildTree() {
         FileTreeNode root = new FileTreeNode();
-        if (myFiles == null) {
-            Messages.showErrorDialog(myProject, "文件列表为空", "问题");
-            return root;
-        }
+//        if (myFiles == null) {
+//            Messages.showErrorDialog(myProject, "文件列表为空", "问题");
+//            return root;
+//        }
         for (VirtualFile file : myFiles) {
             if (filterText != null && !filterText.isEmpty()
                     && !file.getName().contains(filterText)) continue;
             FileTreeNode node = new FileTreeNode(file);
-            if (cbNoZip!= null && cbNoZip.isSelected() && node.getZipCount() > 0)
-                continue;
-//            if (cbNoZip!= null && tfFilterCompressNum!=null && cbNoZip.isSelected() && !tfFilterCompressNum.getText().isEmpty() && node.getZipCount() > Integer.getInteger(tfFilterCompressNum.getText()))
+//            if (cbNoZip!= null && tfFilterCompressNum != null && cbNoZip.isSelected() && !tfFilterCompressNum.getText().isEmpty() && node.getZipCount() == Integer.getInteger(tfFilterCompressNum.getText()))
 //                continue;
+            if (cbNoZip!= null && cbNoZip.isSelected() && node.getZipCount() != 0)
+                continue;
             getParent(root, file).add(node);
         }
 

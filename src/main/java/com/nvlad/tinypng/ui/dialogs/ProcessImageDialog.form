@@ -67,7 +67,7 @@
                 </constraints>
                 <properties>
                   <text value="1"/>
-                  <toolTipText value=""/>
+                  <toolTipText value="x"/>
                 </properties>
               </component>
               <component id="aae20" class="javax.swing.JLabel" binding="lSkipCompressText">
