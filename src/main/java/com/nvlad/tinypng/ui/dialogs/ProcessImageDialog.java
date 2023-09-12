@@ -73,7 +73,7 @@ public class ProcessImageDialog extends JDialog {
         getRootPane().setDefaultButton(buttonProcess);
 
         SpinnerModel compressModel = new SpinnerNumberModel(0, 0, 100, 1);
-        SpinnerModel skipModel = new SpinnerNumberModel(0, 0, 100, 1);
+        SpinnerModel skipModel = new SpinnerNumberModel(1, 0, 100, 1);
         sCompressFilterNum.setModel(compressModel);
         sSkipCount.setModel(skipModel);
 
