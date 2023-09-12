@@ -28,10 +28,8 @@ public class ProcessActionListener extends ActionListenerBase {
             return;
         }
         boolean isSkipCompress = dialog.getRbSkipCompress().isSelected();
-        int skipCount = 0;
-        String temp = dialog.getTfSkipCount().getText();
-        if (StringUtils.isNumeric(temp))
-            skipCount = Integer.parseInt(temp);
+        int skipCount = (int)dialog.getTfSkipCount().getValue();
+
 
         dialog.setTitle("[0%]");
         dialog.setCompressInProgress(true);
@@ -39,11 +37,10 @@ public class ProcessActionListener extends ActionListenerBase {
         dialog.getButtonCancel().setText("Stop");
         final List<FileTreeNode> nodes = getCheckedNodes((FileTreeNode) dialog.getTree().getModel().getRoot());
 
-        int finalSkipCount = skipCount;
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             int index = 0;
             for (FileTreeNode node : nodes) {
-                if (isSkipCompress && node.getZipCount() >= finalSkipCount)
+                if (isSkipCompress && node.getZipCount() >= skipCount)
                     continue;
                 try {
                     node.setImageBuffer(TinyPNG.process(node.getVirtualFile()));

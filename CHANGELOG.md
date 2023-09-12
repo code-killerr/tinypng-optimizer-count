@@ -9,6 +9,10 @@ Waiting for Release
 - Add: Transparency chessboard under image
 - Add: Show optimizing errors
 
+## 1.1.6更新内容
+- 增加搜索过滤功能
+- 优化数值设置方式
+
 ## 1.1.5更新内容
 - 防止压缩后还有未保存文件，允许多次保存
 - 压缩后清除缓存数据，调整压缩率显示

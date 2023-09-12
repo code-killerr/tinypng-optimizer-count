@@ -11,11 +11,12 @@ import com.nvlad.tinypng.Constants;
 import com.nvlad.tinypng.PluginGlobalSettings;
 import com.nvlad.tinypng.ui.components.JImage;
 import com.nvlad.tinypng.ui.dialogs.listeners.*;
-import com.nvlad.tinypng.util.ZipSignUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -24,7 +25,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,15 +47,15 @@ public class ProcessImageDialog extends JDialog {
     private JLabel titleAfter;
     private JPanel toolbar;
     private JCheckBox rbSkipCompress;
-    private JTextField tfSkipCount;
+    private JSpinner sSkipCount;
     private JLabel lSkipCompressText;
     private JButton buttonDeleteTag;
     private JButton buttonAddTag;
     private JCheckBox radioSkipSignFile;
     private JTextField filterEdit;
     private JCheckBox cbNoZip;
-    private JTextField tfFilterCompressNum;
     private JLabel lCompressText;
+    private JSpinner sCompressFilterNum;
     private List<VirtualFile> myFiles;
     private List<VirtualFile> myRoots;
     private Project myProject;
@@ -72,6 +72,15 @@ public class ProcessImageDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonProcess);
 
+        SpinnerModel compressModel = new SpinnerNumberModel(0, 0, 100, 1);
+        SpinnerModel skipModel = new SpinnerNumberModel(0, 0, 100, 1);
+        sCompressFilterNum.setModel(compressModel);
+        sSkipCount.setModel(skipModel);
+
+        sCompressFilterNum.addChangeListener(e -> {
+            if(cbNoZip!= null && cbNoZip.isSelected()) refreshModel();
+        });
+
         buttonProcess.addActionListener(new ProcessActionListener(this));
         buttonSave.addActionListener(new SaveActionListener(this));
         buttonAddTag.addActionListener(new AddTagActionListener(this));
@@ -79,49 +88,6 @@ public class ProcessImageDialog extends JDialog {
 
         final CancelActionListener cancelActionListener = new CancelActionListener(this);
         buttonCancel.addActionListener(cancelActionListener);
-
-        // 限制只能输入数字
-        tfSkipCount.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-
-            @Override
-            public void keyPressed(KeyEvent e) {}
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                Object o = e.getSource();
-                if (o instanceof JTextField) {
-                    char keyCh = e.getKeyChar();
-                    Pattern pat = Pattern.compile("[0-9|\b]");
-                    if (!pat.matcher(String.valueOf(keyCh)).matches()){
-                        e.setKeyChar('\0');
-                        tfSkipCount.setText("");
-                    }
-                }
-            }
-        });
-
-//        tfFilterCompressNum.addKeyListener(new KeyListener() {
-//            @Override
-//            public void keyTyped(KeyEvent e) {}
-//
-//            @Override
-//            public void keyPressed(KeyEvent e) {}
-//
-//            @Override
-//            public void keyReleased(KeyEvent e) {
-//                Object o = e.getSource();
-//                if (o instanceof JTextField) {
-//                    char keyCh = e.getKeyChar();
-//                    Pattern pat = Pattern.compile("[0-9|\b]");
-//                    if (!pat.matcher(String.valueOf(keyCh)).matches()){
-//                        e.setKeyChar('\0');
-//                        tfFilterCompressNum.setText("");
-//                    }
-//                }
-//            }
-//        });
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -218,9 +184,13 @@ public class ProcessImageDialog extends JDialog {
 //         如果选项变化重新过滤
         cbNoZip.addItemListener(e -> {
             if (fileTree == null) return;
-            fileTree.setModel(new DefaultTreeModel(buildTree()));
-            TreeUtil.expandAll(fileTree);
+            refreshModel();
         });
+    }
+
+    private void refreshModel(){
+        fileTree.setModel(new DefaultTreeModel(buildTree()));
+        TreeUtil.expandAll(fileTree);
     }
 
     @Override
@@ -283,8 +253,8 @@ public class ProcessImageDialog extends JDialog {
         return radioSkipSignFile;
     }
 
-    public JTextField getTfSkipCount(){
-        return tfSkipCount;
+    public JSpinner getTfSkipCount(){
+        return sSkipCount;
     }
 
     public JButton getButtonProcess() {
@@ -325,23 +295,20 @@ public class ProcessImageDialog extends JDialog {
     private void onFilterChanged(String text) {
         filterText = text;
         if (fileTree == null) return;
-        fileTree.setModel(new DefaultTreeModel(buildTree()));
-        TreeUtil.expandAll(fileTree);
+        refreshModel();
     }
 
     private FileTreeNode buildTree() {
         FileTreeNode root = new FileTreeNode();
-//        if (myFiles == null) {
-//            Messages.showErrorDialog(myProject, "文件列表为空", "问题");
-//            return root;
-//        }
+        if (myFiles == null) {
+            Messages.showErrorDialog(myProject, "文件列表为空", "问题");
+            return root;
+        }
         for (VirtualFile file : myFiles) {
             if (filterText != null && !filterText.isEmpty()
                     && !file.getName().contains(filterText)) continue;
             FileTreeNode node = new FileTreeNode(file);
-//            if (cbNoZip!= null && tfFilterCompressNum != null && cbNoZip.isSelected() && !tfFilterCompressNum.getText().isEmpty() && node.getZipCount() == Integer.getInteger(tfFilterCompressNum.getText()))
-//                continue;
-            if (cbNoZip!= null && cbNoZip.isSelected() && node.getZipCount() != 0)
+            if (cbNoZip!= null && sCompressFilterNum!= null && cbNoZip.isSelected() && sCompressFilterNum.getValue() != null && node.getZipCount() != (int)sCompressFilterNum.getValue())
                 continue;
             getParent(root, file).add(node);
         }
