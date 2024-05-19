@@ -1,4 +1,4 @@
-TinyPNG Image Optimizer for JetBrains IDE
+TinyPNG Image Optimizer Count Version for JetBrains IDE
 =========================================
 
 An easy to use plugin for various JetBrains IDEs. Optimize any image directly from your IDE without the need to open your browser or manually download the image to save it locally.
