@@ -7,54 +7,57 @@ buildscript {
         mavenCentral()
         google()
         maven { url "https://plugins.gradle.org/m2/" }
-    }
-
-    dependencies {
-        classpath "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.4.2"
+        gradlePluginPortal()
     }
 }
 
 plugins {
-    id 'java'
-    id 'org.jetbrains.intellij' version '0.4.1'
+    id("java")
+    id 'org.jetbrains.intellij.platform' version '2.1.0'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile ('com.tinify:tinify:1.6.2') {
-//        exclude group: 'com.google.code.gson', module: 'gson'
-//        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
-//        exclude group: 'com.squareup.okio', module: 'okio'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation('com.tinify:tinify:1.6.2') {
+        exclude group: 'com.google.code.gson', module: 'gson'
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        exclude group: 'com.squareup.okio', module: 'okio'
     }
-    compile ('io.sentry:sentry:1.7.16') {
+    implementation ('io.sentry:sentry:1.7.16') {
         exclude group: 'org.slf4j', module: 'slf4j-api'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
     }
 }
 
-intellij {
-    version ideVersion
-    updateSinceUntilBuild false
-    plugins = [
-            "coverage",
-            "java-i18n",
-            "remote-run",
-            "properties",
-    ]
+dependencies {
+    intellijPlatform {
+        create(providers.gradleProperty('platformType'), providers.gradleProperty('platformVersion'))
+        bundledPlugin 'com.intellij.java'
+        pluginVerifier()
+        zipSigner()
+        instrumentationTools()
+//        plugins "coverage", "java-i18n", "remote-run", "properties"
+    }
 }
 
-group 'com.nvlad'
-version '1.1.6'
+group pluginGroup
+version pluginVersion
 
-patchPluginXml {
-    changeNotes """
+intellijPlatform {
+    pluginConfiguration {
+        changeNotes = """
+    <h3> 1.1.7更新内容</h3>
+    - - 兼容2024.3以上的ide版本，更新gradle版本，更新插件依赖版本<br/>
     <h3> 1.1.6更新内容</h3>
     - 增加搜索过滤功能<br/>
     - 优化数值设置方式<br/>
@@ -84,5 +87,12 @@ patchPluginXml {
     <br/>
     <h3>Update "Usage this month" value on Open plugin settings or press Apply</h3><br/>
     - Catch TinyPNG service errors.<br/>
-"""
+""" // local variable for configuration cache compatibility
+        // Get the latest available change notes from the changelog file
+
+        ideaVersion {
+            sinceBuild = providers.gradleProperty("pluginSinceBuild")
+            untilBuild = providers.gradleProperty("pluginUntilBuild")
+        }
+    }
 }

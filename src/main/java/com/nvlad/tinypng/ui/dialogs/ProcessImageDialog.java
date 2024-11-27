@@ -5,6 +5,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.CheckboxTree;
 import com.intellij.ui.JBColor;
+import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.nvlad.tinypng.Constants;
@@ -138,7 +139,8 @@ public class ProcessImageDialog extends JDialog {
                 return new BasicSplitPaneDivider(this) {
                     private final int dashHeight = 40;
                     private Color background = UIUtil.getPanelBackground();
-                    private Color dashes = UIUtil.getSeparatorColor();
+//                    private Color dashes = UIUtil.getSeparatorColor();
+                    private Color dashes = JBUI.CurrentTheme.CustomFrameDecorations.separatorForeground();
 
                     public void setBorder(Border b) {
                     }
@@ -275,7 +277,9 @@ public class ProcessImageDialog extends JDialog {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-        UIUtil.removeScrollBorder(scrollPanel);
+        if (scrollPanel != null){
+            UIUtil.removeScrollBorder(scrollPanel);
+        }
         imageBefore = new JImage();
         imageAfter = new JImage();
         fileTree = new CheckboxTree(new FileCellRenderer(myProject), buildTree());

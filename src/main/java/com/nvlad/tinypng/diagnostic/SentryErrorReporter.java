@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class SentryErrorReporter {
-    static void submitErrorReport(Throwable error, String description, Consumer<SubmittedReportInfo> consumer) {
+    static void submitErrorReport(Throwable error, String description, Consumer<? super SubmittedReportInfo> consumer) {
         final SentryClient sentry = SentryClientFactory.sentryClient("https://f6b3a5fb9f11461ab70f481eb68ed237@sentry.nvlad.com/6");
         sentry.addEventSendCallback(new EventSendCallback() {
             @Override

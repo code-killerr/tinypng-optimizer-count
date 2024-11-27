@@ -3,7 +3,7 @@ package com.nvlad.tinypng.ui.dialogs;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.actions.AboutAction;
 import com.intellij.openapi.actionSystem.*;
-import org.intellij.images.actions.ToggleTransparencyChessboardAction;
+//import org.intellij.images.actions.ToggleTransparencyChessboardAction;
 
 import javax.swing.*;
 import java.awt.*;

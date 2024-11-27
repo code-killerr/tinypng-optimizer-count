@@ -18,7 +18,8 @@ public class ErrorReportHandler extends ErrorReportSubmitter {
     }
 
     @Override
-    public boolean submit(@NotNull IdeaLoggingEvent[] events, @Nullable String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<SubmittedReportInfo> consumer) {
+    public boolean submit(@NotNull IdeaLoggingEvent[] events, @Nullable String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<? super SubmittedReportInfo> consumer) {
+        super.submit(events, additionalInfo, parentComponent, consumer);
         for (IdeaLoggingEvent event : events) {
             Throwable throwable = event.getThrowable();
             if (event.getData() instanceof AbstractMessage) {

@@ -8,6 +8,8 @@ Waiting for Release
 - Fix: NPE when choose bad image
 - Add: Transparency chessboard under image
 - Add: Show optimizing errors
+## 1.1.7更新内容
+- 兼容2024.3以上的ide版本，更新gradle版本，更新插件依赖版本
 
 ## 1.1.6更新内容
 - 增加搜索过滤功能
