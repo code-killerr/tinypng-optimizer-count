@@ -1,17 +1,17 @@
 <idea-plugin>
-    <id>com.fn.tinypng-optimizer</id>
+    <id>com.tinypng-optimizer</id>
     <name>TinyPNG Image Optimizer</name>
-    <vendor email="tinypng@fn.com" url="https://code-killerr.github.io/">xuegang.tu</vendor>
+    <vendor email="txq0917@gmail.com" url="https://code-killerr.github.io/">xuegang.tu</vendor>
 
     <description><![CDATA[
-    (modify by tinypng-optimizer)
+    (modify by xuegang.tu)
     使用 <a href="https://tinypng.com/">TinyPNG</a> 服务来进行png,jpg或者webp文件的压缩.
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
-    <idea-version since-build="163"/>
+    <idea-version since-build="202"/>
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.nvlad.tinypng.PluginGlobalSettings"/>
         <!-- Add your extensions here -->

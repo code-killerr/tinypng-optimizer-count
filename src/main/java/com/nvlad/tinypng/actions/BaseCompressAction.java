@@ -12,6 +12,7 @@ import com.nvlad.tinypng.Constants;
 import com.nvlad.tinypng.PluginGlobalSettings;
 import com.tinify.Tinify;
 
+import javax.swing.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,10 +42,16 @@ public abstract class BaseCompressAction extends AnAction {
         if (!settings.checkSupportedFiles) {
             return;
         }
-
-        final List<VirtualFile> list = getSupportedFileList(PlatformDataKeys.VIRTUAL_FILE_ARRAY.getData(e.getDataContext()), true);
-        final Presentation presentation = e.getPresentation();
-        presentation.setEnabled(!list.isEmpty());
+        // 线程中执行耗时操作
+        SwingUtilities.invokeLater(() -> {
+            // 在这里执行获取项目文件的操作
+            final List<VirtualFile> list = getSupportedFileList(PlatformDataKeys.VIRTUAL_FILE_ARRAY.getData(e.getDataContext()), true);
+            // 更新UI
+            SwingUtilities.invokeLater(() -> {
+                final Presentation presentation = e.getPresentation();
+                presentation.setEnabled(!list.isEmpty());
+            });
+        });
     }
 
     @Override

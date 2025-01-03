@@ -1,60 +1,55 @@
 buildscript {
     repositories {
         maven { url 'https://maven.aliyun.com/repository/public' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url "https://maven.aliyun.com/repFLFfgaository/gradle-plugin/" }
-        maven { url "https://maven.aliyun.com/repository/jcenter/" }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url "https://maven.aliyun.com/repository/central" }
         mavenCentral()
         google()
         maven { url "https://plugins.gradle.org/m2/" }
-    }
-
-    dependencies {
-        classpath "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.4.2"
+        gradlePluginPortal()
     }
 }
 
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.4.1'
+    id 'org.jetbrains.intellij' version '1.17.4'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-repositories {
-    mavenCentral()
-}
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile ('com.tinify:tinify:1.6.2') {
+    implementation files('libs/annotations-24.0.1.jar')
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation files('libs/tinify-1.6.2.jar') {
 //        exclude group: 'com.google.code.gson', module: 'gson'
 //        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
 //        exclude group: 'com.squareup.okio', module: 'okio'
     }
-    compile ('io.sentry:sentry:1.7.16') {
-        exclude group: 'org.slf4j', module: 'slf4j-api'
-        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    implementation files('libs/sentry-1.7.16.jar') {
+//        exclude group: 'org.slf4j', module: 'slf4j-api'
+//        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
     }
+
+    implementation fileTree(dir: 'libs', includes: ['*.jar'])
 }
 
 intellij {
-    version ideVersion
-    updateSinceUntilBuild false
+    version = ideVersion
+    updateSinceUntilBuild = false
     plugins = [
-            "coverage",
+//            "coverage",
             "java-i18n",
-            "remote-run",
+//            "remote-run",
             "properties",
     ]
 }
 
 group 'com.nvlad'
-version '1.1.6'
+version '1.1.8'
 
 patchPluginXml {
-    changeNotes """
+    changeNotes = """
     <h3> 1.1.6更新内容</h3>
     - 增加搜索过滤功能<br/>
     - 优化数值设置方式<br/>

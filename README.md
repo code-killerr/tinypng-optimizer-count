@@ -7,7 +7,7 @@ New version with TinyPNG Image Optimizer, this plugin is not update,So I update 
 Now you can check your images which is not compress and you can compress mutiple image in one compress.
 
 
-一个简单易用的JetBrains压缩工具插件，无需浏览器即可使用TinyPng来进行压缩，由于原始版本已经停止更新，所以我对这个插件进行了更新优化，并且添加了更易于使用的新功能。
+一个简单易用的JetBrains压缩工具插件，无需浏览器即可使用TinyPng来进行压缩，由于原始版本已经停止更新，所以对这个插件进行了更新优化，并且添加了更易于使用的新功能。
 
 目前你可以检查未压缩的图像以及对多个图像进行同时压缩
 
@@ -22,7 +22,7 @@ Installation
 
 2.下载release中的压缩包
 
-3.拖动压缩包到你的IDE
+3.拖动压缩包到你的IDE/在设置-插件中直接安装
 
 4.完成安装并使用
 
